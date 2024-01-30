@@ -1,11 +1,11 @@
-name: nogil bulider
+name: nogil-3.12 bulider
 
 on:
     workflow_dispatch:
     
 jobs:      
     mambaforge:
-        name: mambaforge (${{ matrix.os }}, Mambaforge, Python 3.9)
+        name: mambaforge (${{ matrix.os }}, Mambaforge, Python 3.12)
         runs-on: ${{ matrix.os }}-latest
         strategy:
             fail-fast: false
@@ -29,7 +29,7 @@ jobs:
                 name: Checkout master
                 uses: actions/checkout@v3
                 with:
-                    ref: main
+                    ref: 3.12
         
             # 安装conda环境
             - 
@@ -38,7 +38,7 @@ jobs:
                     # condarc-file: ${{ matrix.condarc-file }}
                     miniforge-variant: ${{ matrix.miniforge-variant }}
                     miniforge-version: ${{ matrix.miniforge-version }}
-                    python-version: 3.9
+                    python-version: 3.12
                     # python-version: ${{ matrix.python-version }}
                     use-mamba: true
 
@@ -66,6 +66,11 @@ jobs:
             - name: Install Requirements
               run: |
                   mamba install conda-build anaconda-client
+
+            - name: Fix Linux
+              if: matrix.os == 'ubuntu'
+              run: |
+                sudo apt install gcc g++ make
 
             -
                 # configure: error: C compiler cannot create executables

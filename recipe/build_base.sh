@@ -1,6 +1,5 @@
 #!/bin/bash
 set -ex
-set +e
 
 echo "Build start"
 
@@ -154,15 +153,13 @@ if [[ "${CONDA_BUILD_CROSS_COMPILATION}" == "1" ]]; then
             AR="$(${CC_FOR_BUILD} --print-prog-name=ar)" \
             RANLIB="$(${CC_FOR_BUILD} --print-prog-name=ranlib)" \
             LD="$(${CC_FOR_BUILD} --print-prog-name=ld)" && \
-      if [[ ${target_platform} == osx-* ]]; then
-        ${SRC_DIR}/configure --build=${BUILD} \
-                             --host=${BUILD} \
-                             --prefix=${BUILD_PYTHON_PREFIX} \
-                             --with-tzpath=${PREFIX}/share/zoneinfo \
-                             --with-platlibdir=lib && \
-      else
-        ${SRC_DIR}/configure --prefix=${BUILD_PYTHON_PREFIX}
-      fi
+      # ${SRC_DIR}/configure --build=${BUILD} \
+      #                      --host=${BUILD} \
+      #                      --prefix=${BUILD_PYTHON_PREFIX} \
+      #                      --with-ensurepip=no \
+      #                      --with-tzpath=${PREFIX}/share/zoneinfo \
+      #                      --with-platlibdir=lib && \
+      ${SRC_DIR}/configure --prefix=${BUILD_PYTHON_PREFIX}
       make -j${CPU_COUNT} && \
       make install)
     export PATH=${BUILD_PYTHON_PREFIX}/bin:${PATH}
@@ -248,7 +245,7 @@ _common_configure_args+=(--prefix=${PREFIX})
 _common_configure_args+=(--build=${BUILD})
 _common_configure_args+=(--host=${HOST})
 _common_configure_args+=(--enable-ipv6)
-# _common_configure_args+=(--with-ensurepip=no)
+_common_configure_args+=(--with-ensurepip=no)
 _common_configure_args+=(--with-tzpath=${PREFIX}/share/zoneinfo)
 _common_configure_args+=(--with-computed-gotos)
 _common_configure_args+=(--with-system-ffi)
